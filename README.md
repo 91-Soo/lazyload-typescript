@@ -2,6 +2,8 @@
 
 공부
 ```
+import { LazyLoadElement, LazyLoadElementCallbacks, LazyLoadElementState, LazyLoadElementResult, LazyLoadElementOptions} from '.....lazy-load-element';
+
 let lazyloadOptions: LazyLoadElementOptions = {}
 let lazyloadCallback: LazyLoadElementCallbacks = {
   load: (state: LazyLoadElementState, result: LazyLoadElementResult): void => {
@@ -13,5 +15,7 @@ let lazyloadCallback: LazyLoadElementCallbacks = {
 this.lazyLoadElement = new LazyLoadElement(null, lazyloadOptions, lazyloadCallback);
 ```
 ```
+import { LazyLoadElement, LazyLoadElementCallbacks, LazyLoadElementState, LazyLoadElementResult, LazyLoadElementOptions} from '.....lazy-load-element';
+
 this.lazyLoadElement = new LazyLoadElement();
 ```
