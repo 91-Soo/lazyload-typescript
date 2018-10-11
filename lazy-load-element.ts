@@ -7,11 +7,12 @@
  * @author KimMinSoo
  * @date 2018/10/11
  */
+
 export interface LazyLoadElementOptions {
-  root?: Element,
-  rootMargin?: string,
-  threshold?: number[],
-  isDisposable?: boolean
+  root?: Element;
+  rootMargin?: string;
+  threshold?: number[];
+  isDisposable?: boolean;
 }
 
 export interface LazyLoadElementCallbacks {
@@ -21,15 +22,15 @@ export interface LazyLoadElementCallbacks {
 }
 
 export interface LazyLoadElementResult {
-  element: Element,
-  attr: string,
-  isIntersecting: boolean,
-  intersectionRatio: number
+  element: Element;
+  attr: string;
+  isIntersecting: boolean;
+  intersectionRatio: number;
 }
 
 export interface LazyLoadElementState {
-  code: number,
-  msg: string
+  code: number;
+  msg: string;
 }
 
 export class LazyLoadElement {
@@ -91,7 +92,7 @@ export class LazyLoadElement {
       }
     };
   }
-  
+
   private makeElementNodeList(element: Element | NodeListOf<Element>): NodeListOf<Element> {
     let elements: NodeListOf<Element> = null;
 
@@ -183,4 +184,3 @@ export class LazyLoadElement {
     }
   }
 }
-
