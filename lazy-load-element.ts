@@ -60,29 +60,6 @@ export class LazyLoadElement {
     }
   }
 
-  private makeElementNodeList(element: Element | NodeListOf<Element>): NodeListOf<Element> {
-    let elements: NodeListOf<Element> = null;
-
-    if(element) {
-      if(element instanceof Element) {
-        elements = element.querySelectorAll('[lazy-load]:not([lazy-load-loaded])');
-      }
-      else if(element instanceof NodeList) {
-        elements = element;
-      }
-      else {
-        if(this.callbacks && this.callbacks.error) {
-          this.callbacks.error(this.stateCodes['ERRORELEMENT']);
-        }
-      }
-    }
-    else {
-      elements = document.querySelectorAll('[lazy-load]:not([lazy-load-loaded])');
-    }
-
-    return elements;
-  }
-
   private init(options: LazyLoadElementOptions, callbacks: LazyLoadElementCallbacks) {
     this.config = {
       root: options && options.root ? options.root : null,
@@ -113,6 +90,29 @@ export class LazyLoadElement {
         msg: 'LazyLoadElement call'
       }
     };
+  }
+  
+  private makeElementNodeList(element: Element | NodeListOf<Element>): NodeListOf<Element> {
+    let elements: NodeListOf<Element> = null;
+
+    if(element) {
+      if(element instanceof Element) {
+        elements = element.querySelectorAll('[lazy-load]:not([lazy-load-loaded])');
+      }
+      else if(element instanceof NodeList) {
+        elements = element;
+      }
+      else {
+        if(this.callbacks && this.callbacks.error) {
+          this.callbacks.error(this.stateCodes['ERRORELEMENT']);
+        }
+      }
+    }
+    else {
+      elements = document.querySelectorAll('[lazy-load]:not([lazy-load-loaded])');
+    }
+
+    return elements;
   }
 
   private addObserve(elements: NodeListOf<Element>): void {
