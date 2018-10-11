@@ -9,7 +9,9 @@ let lazyloadCallback: LazyLoadElementCallbacks = {
     console.log('result', result);
   }
 }
-```
-```
+
 this.lazyLoadElement = new LazyLoadElement(null, lazyloadOptions, lazyloadCallback);
+```
+```
+this.lazyLoadElement = new LazyLoadElement();
 ```
