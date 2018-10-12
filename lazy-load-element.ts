@@ -61,10 +61,6 @@ export class LazyLoadElement {
     }
   }
 
-  public apply(){
-
-  }
-
   private init(options: LazyLoadElementOptions, callbacks: LazyLoadElementCallbacks) {
     this.config = {
       root: options && options.root ? options.root : null,
