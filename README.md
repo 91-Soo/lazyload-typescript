@@ -9,6 +9,14 @@ let lazyloadCallback: LazyLoadElementCallbacks = {
   load: (state: LazyLoadElementState, result: LazyLoadElementResult): void => {
     console.log('state', state);
     console.log('result', result);
+  },
+  call: (state: LazyLoadElementState, result: LazyLoadElementResult): void => {
+    console.log('state', state);
+    console.log('result', result);
+  },
+  error: (state: LazyLoadElementState, result: LazyLoadElementResult): void => {
+    console.log('state', state);
+    console.log('result', result);
   }
 }
 
