@@ -56,9 +56,13 @@ export class LazyLoadElement {
     }
     else {
       if(this.callbacks && this.callbacks.error) {
-        this.callbacks.error(this.stateCodes['ERRORELEMENT']);
+        this.callbacks.error(this.stateCodes['ERRORELEMENT'], this.makeResult(null, null, null));
       }
     }
+  }
+
+  public apply(){
+
   }
 
   private init(options: LazyLoadElementOptions, callbacks: LazyLoadElementCallbacks) {
@@ -105,7 +109,7 @@ export class LazyLoadElement {
       }
       else {
         if(this.callbacks && this.callbacks.error) {
-          this.callbacks.error(this.stateCodes['ERRORELEMENT']);
+          this.callbacks.error(this.stateCodes['ERRORELEMENT'], this.makeResult(null, null, null));
         }
       }
     }
@@ -121,7 +125,7 @@ export class LazyLoadElement {
       if(this.debug) console.log('IntersectionObserver not support');
 
       if(this.callbacks && this.callbacks.error) {
-        this.callbacks.error(this.stateCodes['NOTSUPPORT']);
+        this.callbacks.error(this.stateCodes['NOTSUPPORT'], this.makeResult(null, null, null));
       }
 
       [].forEach.call(elements, function (element) {
@@ -131,19 +135,19 @@ export class LazyLoadElement {
     else {
       if(this.debug) console.log('IntersectionObserver support');
 
-      this.observer = new IntersectionObserver(function (entries: any, config: IntersectionObserverInit) {
+      this.observer = new IntersectionObserver(function (entries: PerformanceEntryList) {
         entries.forEach(function (entry) {
           if(0 < entry.intersectionRatio) {
-            this.preLoad(entry, this.observer);
+            this.preLoad(entry.target, entry, this.observer);
           }
 
           if(this.callbacks && this.callbacks.call) {
-            this.callbacks.call(this.stateCodes['CALL'], { element: entry.target, isIntersecting: entry.isIntersecting, intersectionRatio: entry.intersectionRatio });
+            this.callbacks.call(this.stateCodes['CALL'], this.makeResult(entry.target, null, entry));
           }
         }.bind(this));
       }.bind(this), this.config);
 
-      [].forEach.call(elements, function (element, index) {
+      [].forEach.call(elements, function (element) {
         // samsung browser error
         setTimeout(function () {
           element.setAttribute('lazy-load-unloaded', '');
@@ -153,24 +157,31 @@ export class LazyLoadElement {
     }
   }
 
-  private preLoad(entry: IntersectionObserverEntry, observer?: IntersectionObserver): void {
-    let element: any = entry.target;
-
+  private preLoad(element: any, entry: IntersectionObserverEntry, observer: IntersectionObserver): void {
     if(!element.getAttribute('lazy-load-loaded')) {
-      [].forEach.call(element.attributes, (function (attribute, index) {
+      [].forEach.call(element.attributes, (function (attribute) {
         if(attribute.nodeName.match(/data-lazy/)) {
           let inputAttribute: string = attribute.nodeName.replace(/data-lazy-/, '');
+          let inputValue: string = element.getAttribute(attribute.nodeName);
 
-          if('class' == inputAttribute) {
-            element.classList.add(element.getAttribute(attribute.nodeName));
-          }
-          else {
-            element.onerror = function (e) { element.onerror = null; element.removeAttribute('src'); };
-            element.setAttribute(inputAttribute, element.getAttribute(attribute.nodeName));
+          switch(inputAttribute) {
+            case "class":
+              element.classList.add(inputValue);
+            break;
+            case "style":
+              element.setAttribute(inputAttribute, (element.getAttribute('style') || '') + inputValue);
+            break;
+            case "src":
+              element.onerror = function () { element.onerror = null; element.removeAttribute('src'); };
+              element.setAttribute(inputAttribute, inputValue);
+            break;
+            default:
+              element.setAttribute(inputAttribute, inputValue);
+            break;
           }
 
           if(this.callbacks && this.callbacks.load) {
-            this.callbacks.load(this.stateCodes['LOAD'], { element: element, attr: inputAttribute, isIntersecting: entry.isIntersecting, intersectionRatio: entry.intersectionRatio });
+            this.callbacks.load(this.stateCodes['LOAD'], this.makeResult(element, inputAttribute, entry));
           }
         }
       }).bind(this));
@@ -181,6 +192,15 @@ export class LazyLoadElement {
       if(observer && this.isDisposable) {
         observer.unobserve(element);
       }
+    }
+  }
+
+  private makeResult(element: Element, attr: string, entry: IntersectionObserverEntry): LazyLoadElementResult {
+    return {
+      element: element,
+      attr: attr,
+      isIntersecting: entry ? entry.isIntersecting : null,
+      intersectionRatio: entry ? entry.intersectionRatio : null,
     }
   }
 }
